@@ -12,13 +12,13 @@
       "plugins": [
         [
           "expo-media-library",
-            {
-              "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
-              "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
-              "isAccessMediaLocationEnabled": true
-            }
-          ]
+          {
+            "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+            "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
+            "isAccessMediaLocationEnabled": true
+          }
         ]
+      ]
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -27,24 +27,26 @@
       "**/*"
     ],
     "ios": {
-        "supportsTablet": true,
-        "bundleIdentifier": "com.yourcompany.yourappname",
-        "buildNumber": "1.0.0",
-        "infoPlist": {
-          "UIBackgroundModes": [
-            "audio"
-          ]
-        }
-      },
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.yourappname",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio"
+        ]
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "android": {
+      "package": "com.Saviee.Saviee_Player"
     }
+  },
+  "android": {
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/adaptive-icon.png",
+      "backgroundColor": "#FFFFFF"
+    }
+  },
+  "web": {
+    "favicon": "./assets/favicon.png"
   }
-
+}

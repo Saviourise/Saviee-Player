@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Audio} from 'expo-av';
 import { storeAudioForNextOpening } from '../misc/helper';
 import { play, pause, resume, playNext } from '../misc/audiocontroller';
-import MusicFiles from 'react-native-get-music-files';
 
 
 export const AudioContext = createContext()
