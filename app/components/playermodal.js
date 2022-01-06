@@ -113,8 +113,8 @@ const convertTime = (time) => {
     
     const [visible, setVisible] = useState(true);
 
-    useEffect(() => {
-        context.loadPreviousAudio();
+    useEffect(async () => {
+        await context.loadPreviousAudio();
     }, [])
 
     const handlePlayPause = async () => {

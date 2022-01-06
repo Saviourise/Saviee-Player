@@ -85,75 +85,83 @@ class Audiolist extends Component {
     //     }
     // }
 
-    handleAudioPress = async (audio) => {
+    handleAudioPress = async (audio, playListInfo = {}) => {
 
-        const {playbackObj, soundObj, currentAudio, updateState, audioFiles} = this.context;
+        await selectAudio(audio, this.context)
 
-        await Audio.setAudioModeAsync({
-            staysActiveInBackground: true,
-            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-            shouldDuckAndroid: true,
-            playThroughEarpieceAndroid: true,
-            allowsRecordingIOS: true,
-            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-            playsInSilentModeIOS: true,
-        });
+        // const {playbackObj, soundObj, currentAudio, updateState, audioFiles} = this.context;
 
-        //Play Audio
-        if(soundObj === null) {
-            const playbackObj = new Audio.Sound();
-            const status = await play(playbackObj, audio.uri);
-            const index = audioFiles.indexOf(audio);
-            playbackObj.setIsLoopingAsync(true);
-            this.setState({ ...this.state, playerModalMount: true });
-            updateState(
-                this.context, {
-                
-                soundObj: status,
-                currentAudio: audio,
-                isPlaying: true,
-                currentAudioIndex: index,
-            });
-            playbackObj.setOnPlaybackStatusUpdate(this.context.onPlaybackStatusUpdate)
-            return storeAudioForNextOpening(audio, index);
-        }
+        // await Audio.setAudioModeAsync({
+        //     staysActiveInBackground: true,
+        //     interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+        //     shouldDuckAndroid: true,
+        //     playThroughEarpieceAndroid: true,
+        //     allowsRecordingIOS: true,
+        //     interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+        //     playsInSilentModeIOS: true,
+        // });
         
-        //Pause Audio
-        if(soundObj.isLoaded && soundObj.isPlaying && currentAudio.id === audio.id) {
-            const status = await pause(playbackObj);
-            this.setState({ ...this.state, playerModalMount: false });
-             return updateState(
-                this.context, {
-                soundObj: status,
-                isPlaying: false,
-            });
-        }
 
-        //Resume Audio
-        if(soundObj.isLoaded && !soundObj.isPlaying && currentAudio.id === audio.id){
-            const status = await resume(playbackObj);
-            this.setState({ ...this.state, playerModalMount: false });
-             return updateState(
-                this.context, {
-                soundObj: status,
-                isPlaying: true,
-            });
-        }
+        // //Play Audio
+        // if(soundObj === null) {
+        //     const status = await play(playbackObj, audio.uri, audio.lastPosition);
+        //     const index = audioFiles.findIndex(({id}) => id === audio.id);
+        //     this.setState({ ...this.state, playerModalMount: true });
+        //     updateState(
+        //         this.context, {
+        //         soundObj: status,
+        //         currentAudio: audio,
+        //         isPlaying: true,
+        //         currentAudioIndex: index,
+        //         isPlayListRunning: false,
+        //         activePlayList: [],
+        //         ...playListInfo,
+        //     });
+        //     playbackObj.setOnPlaybackStatusUpdate(this.context.onPlaybackStatusUpdate)
+        //     return storeAudioForNextOpening(audio, index);
+        // }
+        
+        // //Pause Audio
+        // if(soundObj.isLoaded && soundObj.isPlaying && currentAudio.id === audio.id) {
+        //     const status = await pause(playbackObj);
+        //     this.setState({ ...this.state, playerModalMount: false });
+        //      return updateState(
+        //         this.context, {
+        //         soundObj: status,
+        //         isPlaying: false,
+        //         playbackPosition: status.positionMillis
+        //     });
+        // }
 
-        //Select Another Audio
-        if (soundObj.isLoaded && currentAudio.id !== audio.id) {
-            const status = await playNext(playbackObj, audio.uri)
-            const index = audioFiles.indexOf(audio);
-            this.setState({ ...this.state, playerModalMount: true });
-            updateState(
-                this.context, {
-                soundObj: status,
-                currentAudio: audio,
-                isPlaying: true,
-                currentAudioIndex: index,
-            });
-            return storeAudioForNextOpening(audio, index);
-        }
+        // //Resume Audio
+        // if(soundObj.isLoaded && !soundObj.isPlaying && currentAudio.id === audio.id){
+        //     const status = await resume(playbackObj);
+        //     this.setState({ ...this.state, playerModalMount: false });
+        //      return updateState(
+        //         this.context, {
+        //         soundObj: status,
+        //         isPlaying: true,
+        //         playbackPosition: status.positionMillis
+        //     });
+        // }
+
+        // //Select Another Audio
+        // if (soundObj.isLoaded && currentAudio.id !== audio.id) {
+        //     const status = await playNext(playbackObj, audio.uri)
+        //     const index = audioFiles.findIndex(({id}) => id === audio.id)
+        //     this.setState({ ...this.state, playerModalMount: true });
+        //     updateState(
+        //         this.context, {
+        //         soundObj: status,
+        //         currentAudio: audio,
+        //         isPlaying: true,
+        //         currentAudioIndex: index,
+        //         isPlayListRunning: false,
+        //         activePlayList: [],
+        //         ...playListInfo,
+        //     });
+        //     return storeAudioForNextOpening(audio, index);
+        // }
         
     }
 

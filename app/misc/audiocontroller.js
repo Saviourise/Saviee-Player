@@ -84,7 +84,6 @@ export const selectAudio = async (audio, context, playListInfo = {}) => {
         if(soundObj === null) {
             const status = await play(playbackObj, audio.uri, audio.lastPosition);
             const index = audioFiles.findIndex(({id}) => id === audio.id)
-            playbackObj.setIsLoopingAsync(true);
             updateState(
                 context, {
                     soundObj: status,
