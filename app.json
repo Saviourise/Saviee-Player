@@ -8,7 +8,17 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "plugins": [
+        [
+          "expo-media-library",
+            {
+              "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+              "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
+              "isAccessMediaLocationEnabled": true
+            }
+          ]
+        ]
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -17,7 +27,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+        "supportsTablet": true,
+        "bundleIdentifier": "com.yourcompany.yourappname",
+        "buildNumber": "1.0.0",
+        "infoPlist": {
+          "UIBackgroundModes": [
+            "audio"
+          ]
+        }
+      },
     },
     "android": {
       "adaptiveIcon": {
@@ -29,4 +47,4 @@
       "favicon": "./assets/favicon.png"
     }
   }
-}
+
