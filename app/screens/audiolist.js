@@ -21,6 +21,9 @@ import { useColorScheme } from 'react-native';
 import { play, pause, resume, playNext, selectAudio, didMount } from '../misc/audiocontroller';
 import { storeAudioForNextOpening } from '../misc/helper';
 import color from '../misc/color';
+import { Searchbar, Button, Menu, Divider, Provider, Card, } from 'react-native-paper';
+
+width = Dimensions.get('window').width
 
 class Audiolist extends Component {
         
@@ -91,12 +94,20 @@ class Audiolist extends Component {
     }
     
   render() {
+     
     return <AudioContext.Consumer>
         {({dataProvider, isPlaying}) => {
             
             return ( 
                <> 
-               <SearchComponent />
+               <View style={{flexDirection: 'row', width, padding: 10, justifyContent: 'center',}}>
+                    <Searchbar
+                        placeholder='Search for music'
+                        style={styles.input}
+                        onChangeText={(text) => {this.props.navigation.navigate('SearchScreen', text)}}
+                        value={""}
+                    />
+                </View>
                <Fab />
                <UnderSearch />
             <Screen>
@@ -156,6 +167,11 @@ const styles = StyleSheet.create({
             borderBottomColor: '#ddd',
             borderBottomWidth: 2,
         },
+        input: {
+            width: width - 40,
+            color: color.ACTIVE_BG,
+            fontSize: 18,
+    },
     });
 
 export default Audiolist;

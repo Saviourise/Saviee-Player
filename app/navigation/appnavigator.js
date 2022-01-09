@@ -26,6 +26,13 @@ const HomeScreen = () => {
     </Stack.Navigator>
 }
 
+const PlayerScreen = () => {
+    return <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name='PlayerScreen' component={Audiolist} />
+        <Stack.Screen name='SearchScreen' component={SearchScreen} />
+    </Stack.Navigator>
+}
+
 const Appnavigator = () => {
     return <Tab.Navigator screenOptions={() => ({
             headerShown: false,
@@ -42,7 +49,7 @@ const Appnavigator = () => {
             }
         }} />
         <Tab.Screen name='Songs'
-        component={Audiolist}
+        component={PlayerScreen}
         options={{
             tabBarIcon: ({color, size}) => {
                 return <MaterialCommunityIcons name="radio" size={size} color={color} />
