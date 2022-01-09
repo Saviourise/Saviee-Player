@@ -1,5 +1,5 @@
 import React, { useState, useContext, Component, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Alert, StatusBar } from 'react-native';
 import PlaylistInputModal from "../components/playlistinputmodal";
 import OpenPlayerModal from '../components/openplayermodal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
         paddingTop: 0,
+        backgroundColor: color.APP_BG,
     },
     playlistButton: {
         color: color.ACTIVE_BG,

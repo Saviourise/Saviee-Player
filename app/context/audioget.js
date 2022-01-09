@@ -30,6 +30,8 @@ export default class Audioget extends Component {
             currentAudioIndex: null,
             playbackPosition: null,
             playbackDuration: null,
+            addedToQueue: [],
+            shuffle: false,
         }
 
         this.totalAudioCount = 0;
@@ -54,6 +56,7 @@ export default class Audioget extends Component {
             mediaType: 'audio',
             first: media.totalCount,
         });
+        //console.log(media.assets)
         this.totalAudioCount = media.totalCount
         media = [...media.assets].sort((a, b) => a['filename'] > b['filename']);
         //console.log(media)
@@ -124,16 +127,19 @@ export default class Audioget extends Component {
             });
         }
 
-        if(playbackStatus.isLoaded && !playbackStatus.isPlaying) {
+        if(playbackStatus.isLoaded) {
             storeAudioForNextOpening(
                 this.state.currentAudio,
                 this.state.currentAudioIndex,
                 playbackStatus.positionMillis
             )
-            console.log(playbackStatus.positionMillis)
         }
 
         if(playbackStatus.didJustFinish) {
+            // for (let index = 0; index < 20; index++) {
+            //     console.log(this.state.audioFiles[index])
+            // }
+
             if(this.state.isPlayListRunning) {
                 let audio;
                 const indexOnPlayList = this.state.activePlayList.audios.findIndex(({id}) => id === this.state.currentAudio.id);
@@ -142,7 +148,7 @@ export default class Audioget extends Component {
 
                 if(!audio) audio = this.state.activePlayList.audios[0];
 
-                const indexOnAllList = this.state.audioFiles.findIndex(({id}) => id === audio.id)
+                let indexOnAllList = this.state.audioFiles.findIndex(({id}) => id === audio.id)
 
                 const status = await playNext(this.state.playbackObj, audio.uri)
                 return this.updateState(this, {
@@ -166,15 +172,48 @@ export default class Audioget extends Component {
                 return await storeAudioForNextOpening(this.state.audioFiles[0], 0);
             } 
 
-            const audio = this.state.audioFiles[nextAudioIndex];
-            const status = await playNext(this.state.playbackObj, audio.uri)
-            this.updateState(this, {
-                soundObj: status,
-                currentAudio: audio,
-                isPlaying: true,
-                currentAudioIndex: nextAudioIndex,
-            });
-            await storeAudioForNextOpening(audio, nextAudioIndex);
+            if(Object.keys(this.state.addedToQueue).length != 0) {
+                const audio = this.state.addedToQueue[0];
+                const filteredItems = this.state.addedToQueue.filter(item => item !== this.state.addedToQueue[0])
+                //console.log(filteredItems)
+                indexOnAllList = this.state.audioFiles.findIndex(({id}) => id === audio.id)
+                const status = await playNext(this.state.playbackObj, audio.uri)
+                this.updateState(this, {
+                    soundObj: status,
+                    currentAudio: audio,
+                    isPlaying: true,
+                    currentAudioIndex: indexOnAllList,
+                    addedToQueue: filteredItems,
+                });
+                await storeAudioForNextOpening(audio, nextAudioIndex);
+            } else {
+                if(this.state.shuffle) {
+                    const randomIndex = Math.floor(Math.random() * this.state.audioFiles.length) + 1 ;
+                    const audio = this.state.audioFiles[randomIndex];
+                    indexOnAllList = this.state.audioFiles.findIndex(({id}) => id === audio.id)
+                    const status = await playNext(this.state.playbackObj, audio.uri)
+                    this.updateState(this, {
+                        soundObj: status,
+                        currentAudio: audio,
+                        isPlaying: true,
+                        currentAudioIndex: indexOnAllList,
+                        addedToQueue: {},
+                    });
+                    await storeAudioForNextOpening(audio, nextAudioIndex);
+                } else {
+                    const audio = this.state.audioFiles[nextAudioIndex];
+                    const status = await playNext(this.state.playbackObj, audio.uri)
+                    this.updateState(this, {
+                        soundObj: status,
+                        currentAudio: audio,
+                        isPlaying: true,
+                        currentAudioIndex: nextAudioIndex,
+                    });
+                    await storeAudioForNextOpening(audio, nextAudioIndex);
+                }
+            }
+            
+            
         }
     }
 
@@ -205,6 +244,8 @@ export default class Audioget extends Component {
             playbackDuration,
             isPlayListRunning,
             activePlayList,
+            addedToQueue,
+            shuffle,
         } = this.state
         if(permissionError) {
             return <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
@@ -227,7 +268,9 @@ export default class Audioget extends Component {
             playbackDuration,
             playbackPosition,
             isPlayListRunning,
+            addedToQueue,
             activePlayList,
+            shuffle,
             updateState: this.updateState,
             loadPreviousAudio: this.loadPreviousAudio,
             onPlaybackStatusUpdate: this.onPlaybackStatusUpdate,

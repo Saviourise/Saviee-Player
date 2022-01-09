@@ -1,6 +1,10 @@
-import React from 'react'
-import { View, Text, Modal, StatusBar, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import React, {useState, useContext} from 'react'
+import {AudioContext} from '../context/audioget';
+import { View, Text, Modal, StatusBar, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Dimensions } from 'react-native'
 import color from '../misc/color';
+import {Entypo, AntDesign, Feather, MaterialCommunityIcons, Ionicons, MaterialIcons} from '@expo/vector-icons'
+import { play, pause, resume, playNext, selectAudio, changeAudio, moveAudio } from '../misc/audiocontroller';
+import { Searchbar, Button, Menu, Divider, Provider, Card, IconButton, Colors } from 'react-native-paper';
 
 const OptionModal = ({
     visible,
@@ -11,6 +15,30 @@ const OptionModal = ({
     options}) => {
 
     const {filename} = currentItem
+    const context = useContext(AudioContext)
+    const {addedToQueue, updateState} = context
+    const [queue, setQueue] = useState([])
+
+    const addToQueue = () => {
+        queue.unshift(currentItem)
+        setQueue(queue)
+        //console.log(queue)
+        //console.log(addedToQueue)
+        updateState(context, {
+            addedToQueue: queue
+        })
+    }
+
+    const addToQueuePush = () => {
+        queue.push(currentItem)
+        setQueue(queue)
+        //console.log(queue)
+        //console.log(addedToQueue)
+        updateState(context, {
+            addedToQueue: queue
+        })
+    }
+
     return (
         <>
             <StatusBar hidden={true} />
@@ -21,19 +49,62 @@ const OptionModal = ({
                 onRequestClose={onClose}
             >
                 <View style={styles.modal}>
-                    <Text style={styles.title} numberOfLines={2}>{filename}</Text>
+                    <View style={{flexDirection: 'row', padding: 20, paddingBottom: 0, justifyContent: 'space-between',}}>
+                        <Text style={styles.title} numberOfLines={1}>{filename}</Text>
+                        <Entypo
+                            name="heart-outlined"
+                            size={20}
+                            color={color.FONT_MEDIUM}
+                        />
+                    </View>
                     <View style={styles.optionContainer}>
                         {options.map(optn => {
-                            return <TouchableWithoutFeedback key={optn.title} onPress={optn.onPress}>
-                                        <Text style={styles.option}>{optn.title}</Text>
-                                    </TouchableWithoutFeedback>
+                            return (<TouchableWithoutFeedback key={optn.title} onPress={optn.onPress}>
+                                        <View style={{flexDirection: 'row', paddingVertical: 10,}}>
+                                            <MaterialCommunityIcons 
+                                                name={optn.icon}
+                                                size={20}
+                                                style={styles.textIcon}
+                                            />
+                                            <Text style={styles.option}>{optn.title}  
+                                            </Text>
+                                        </View>
+                                    </TouchableWithoutFeedback>)
                         })}
-                        {/* <TouchableWithoutFeedback onPress={onPlayPress}>
-                            <Text style={styles.option}>Play</Text>
+                        <TouchableWithoutFeedback onPress={addToQueue}>
+                            <View style={{flexDirection: 'row', paddingVertical: 10,}}>
+                                <MaterialCommunityIcons 
+                                    name="play-box-multiple"
+                                    size={20}
+                                    style={styles.textIcon}
+                                />
+                                <Text style={styles.option}>Play Next
+                                </Text>
+                            </View>
                         </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={onPlaylistPress}>
-                            <Text style={styles.option}>Add to Playlist</Text>
-                        </TouchableWithoutFeedback> */}
+                        <TouchableWithoutFeedback onPress={addToQueuePush}>
+                            <View style={{flexDirection: 'row', paddingVertical: 10,}}>
+                                <MaterialIcons 
+                                    name="queue"
+                                    size={20}
+                                    style={styles.textIcon}
+                                />
+                                <Text style={styles.option}>Add to playing queue
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <Divider />
+                        <TouchableWithoutFeedback>
+                            <View style={{flexDirection: 'row', paddingVertical: 10,}}>
+                                <MaterialCommunityIcons 
+                                    name="information"
+                                    size={20}
+                                    style={styles.textIcon}
+                                />
+                                <Text style={styles.option}>Song Details  
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
                     </View>
                 </View>
                 <TouchableWithoutFeedback onPress={onClose}>
@@ -43,6 +114,8 @@ const OptionModal = ({
         </>
     );
 };
+
+const {width} = Dimensions.get('window')
 
 const styles = StyleSheet.create({
     modal: {
@@ -60,17 +133,16 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
+        width: width - 90,
         fontWeight: 'bold',
-        padding: 20,
         paddingBottom: 0,
         color: color.FONT_MEDIUM
     },
     option: {
         fontSize: 16,
-        fontWeight: 'bold',
         color: color.FONT,
-        paddingVertical: 10,
         letterSpacing: 1,
+        paddingHorizontal: 15,
     },
     modalBg: {
         position: 'absolute',

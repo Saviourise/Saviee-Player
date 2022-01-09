@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import color from '../misc/color';
+import { IconButton, Colors } from 'react-native-paper';
 
 const getThumbnailText = (filename) => filename[0]
 
@@ -34,7 +35,7 @@ const convertTime = (minutes) => {
 
 
 const renderPlayPauseIcon = isPlaying => {
-    if(isPlaying) return <Entypo name="controller-paus" size={24} color={color.ACTIVE_FONT} />
+    if(isPlaying) return <MaterialCommunityIcons name="waveform" color={color.ACTIVE_FONT} size={35} />
     return <Entypo name="controller-play" size={24} color={color.ACTIVE_FONT} />
 }
 
@@ -47,9 +48,9 @@ const AudioListItem = ({title, duration, onOptionPress, onAudioPress, isPlaying,
 
       <TouchableOpacity onPress={onAudioPress}>
         <View style={styles.leftContainer}>
-            <View style={[styles.thumbnail, {backgroundColor: activeListItem ? color.ACTIVE_BG : color.FONT_LIGHT}]}>
+            <View style={[styles.thumbnail, {backgroundColor: activeListItem ? color.ACTIVE_BG : color.FONT}]}>
                 <Text style={styles.thumbnailText}>
-                {activeListItem ? renderPlayPauseIcon(isPlaying) : getThumbnailText(title)}
+                {activeListItem ? renderPlayPauseIcon(isPlaying) : <MaterialIcons name="music-note" color={color.FONT_LIGHT} size={15} />}
                 </Text>
             </View>
             
@@ -58,7 +59,7 @@ const AudioListItem = ({title, duration, onOptionPress, onAudioPress, isPlaying,
                 
             <View style={styles.titleContainer}>
   <Text numberOfLines={1} style={styles.title}>
-                    {title}
+                    {title.split('.').slice(0, -1).join('.')}
                     </Text>
 <Text style={styles.timeText}>
                 {convertTime(duration)}
@@ -71,20 +72,11 @@ const AudioListItem = ({title, duration, onOptionPress, onAudioPress, isPlaying,
         
         <View style={styles.rightContainer}>
         <TouchableOpacity>
-        <Entypo
-            name="heart-outlined"
-            size={20}
-            color={color.FONT_MEDIUM}
-            style={{padding: 5, }}
-            />
-        </TouchableOpacity>
-        <TouchableOpacity>
-            <Entypo
-            name="dots-three-vertical"
+            <IconButton
+            icon="dots-vertical"
             size={20}
             color={color.FONT_MEDIUM}
             onPress={onOptionPress}
-            style={{padding: 5,}}
             />
             </TouchableOpacity>
         </View>
@@ -102,10 +94,9 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignSelf: 'center',
-        width: width-20,
+        width,
         zIndex: 10,
         padding: 10,
-        borderRadius: 15,
     },
     container1: {
         backgroundColor: color.APP_BG,
@@ -115,30 +106,30 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         flex: 1,
+        marginLeft: 10,
     },
     rightContainer: {
         flex: 1,
-        flexDirection: 'row',
         flexBasis: 50,
         height: 50,
         alignItems: 'center',
         justifyContent: 'center',
     },
     thumbnail: {
-        height: 50,
-        backgroundColor: color.FONT_LIGHT,
-        flexBasis: 50,
+        height: 40,
+        backgroundColor: color.FONT,
+        flexBasis: 40,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 25,
+        borderRadius: 5,
     },
     thumbnailText: {
         fontSize: 22,
         fontWeight: 'bold',
-        color: color.FONT,
+        color: color.FONT_LIGHT,
     },
     titleContainer: {
-        width: width - 160,
+        width: width - 110,
         paddingLeft: 10,
     },
     title: {

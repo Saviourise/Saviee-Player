@@ -15,6 +15,8 @@ import {
 import {AudioContext} from '../context/audioget';
 import { play, pause, resume, playNext, selectAudio, changeAudio, moveAudio } from '../misc/audiocontroller';
 import { storeAudioForNextOpening } from '../misc/helper';
+import { Searchbar, Button, Menu, Divider, Provider, Card, Surface, } from 'react-native-paper';
+
 
 
 const {width} = Dimensions.get('window')
@@ -228,30 +230,31 @@ const convertTime = (time) => {
     return <>
         <StatusBar
             animated={true}
-            backgroundColor="#000"
-            barStyle='slide'
+            backgroundColor={color.APP_BG}
             showHideTransition='fade'
             hidden={false}
+            barStyle="dark-content"
         />
-        <TouchableWithoutFeedback onPress={openPlayer} theme={DarkTheme} > 
+        <Surface style={styles.surface}>
+        <TouchableWithoutFeedback onPress={openPlayer} > 
             <View style={styles.modalContainer}>
                 <View style={styles.modal}>
                     <View style={{flexDirection: 'row',}}>
                     <Text style={styles.title} numberOfLines={1}>{context.currentAudio.filename}</Text>
                     <View style={styles.audioControllers}>
-                        <PlayerButton iconType='PREV' size={20} onPress={handlePrev} style={{marginTop: 5}} iconColor={color.ACTIVE_FONT} />
-                        <PlayerButton iconColor={color.ACTIVE_FONT} onPress={handlePlayPause} style={{marginHorizontal: 15}} iconType={context.isPlaying ? 'PLAY' : 'PAUSE'} size={30} />
-                        <PlayerButton iconColor={color.ACTIVE_FONT} style={{marginTop: 5}} iconType='NEXT' size={20} onPress={handleNext} />
+                        <PlayerButton iconType='PREV' size={20} onPress={handlePrev} style={{marginTop: 5}} iconColor={color.FONT} />
+                        <PlayerButton iconColor={color.FONT} onPress={handlePlayPause} style={{marginHorizontal: 15}} iconType={context.isPlaying ? 'PLAY' : 'PAUSE'} size={30} />
+                        <PlayerButton iconColor={color.FONT} style={{marginTop: 5}} iconType='NEXT' size={20} onPress={handleNext} />
                     </View>
                     </View>
                     <View style={styles.sliderContainer}>
                             <Slider 
-                                style={styles.slider, {width: width - 0, height: 40}}
+                                style={styles.slider}
                                 minimumValue={0}
                                 maximumValue={1}
                                 step={0.001}
                                 value={calculateSeekBar()}
-                                minimumTrackTintColor={color.ACTIVE_FONT}
+                                minimumTrackTintColor={color.ACTIVE_BG}
                                 maximumTrackTintColor={color.FONT}
                                 thumbTintColor={'rgba(255, 255, 255, 0)'}
                                 onValueChange={(value) => {
@@ -276,40 +279,39 @@ const convertTime = (time) => {
             </View>
             
         </TouchableWithoutFeedback>
+        </Surface>
     </>
 }
 
 const styles = StyleSheet.create({
     sliderContainer: {
         flex: 1,
-        width: width,
+        width: width + 33,
+        marginHorizontal: -16,
         height: 20,
-        paddingBottom: 35,
+        paddingBottom: 10,
+    },
+    surface: {
+        elevation: 30,
     },
     modalContainer: {
         width: width,
-        alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
     },
     modal: {
-        width: width - 5,
+        width,
         position: 'relative',
-        backgroundColor: color.ACTIVE_BG,
-        borderRadius: 15,
+        backgroundColor: '#e1e1e1',
         paddingTop: 0,
-    },
-    optionContainer: {
-        padding: 20,
     },
     title: {
         fontSize: 18,
-        width: width - 130,
+        width: width - 120,
         fontWeight: 'bold',
         padding: 20,
-        paddingBottom: 0,
-        color: color.ACTIVE_FONT,
+        color: color.FONT,
         paddingBottom: 0,
         paddingTop: 10,
         marginTop: 5,

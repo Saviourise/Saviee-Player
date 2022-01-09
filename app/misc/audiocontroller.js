@@ -3,10 +3,12 @@ import { storeAudioForNextOpening } from './helper';
 //Play Audio
 export const play = async (playbackObj, uri, lastPosition) => {
     try {
-        if(!lastPosition) return await playbackObj.loadAsync(
-            { uri },
-            { shouldPlay: true, progressUpdateIntervalMillis: 1000 }
-        );
+        if(!lastPosition) {
+            return await playbackObj.loadAsync(
+                { uri },
+                { shouldPlay: true, progressUpdateIntervalMillis: 1000 }
+            );
+        }
 
         //if there is last position
         await playbackObj.loadAsync(
@@ -77,7 +79,8 @@ export const selectAudio = async (audio, context, playListInfo = {}) => {
         currentAudio,
         updateState,
         audioFiles,
-        onPlaybackStatusUpdate
+        onPlaybackStatusUpdate,
+        shuffle,
     } = context;
     try {
         //Play Audio
@@ -113,10 +116,10 @@ export const selectAudio = async (audio, context, playListInfo = {}) => {
         if(soundObj.isLoaded && !soundObj.isPlaying && currentAudio.id === audio.id){
             const status = await resume(playbackObj);
                 return updateState(
-                context, {
-                soundObj: status,
-                isPlaying: true,
-                playbackPosition: status.positionMillis
+                    context, {
+                        soundObj: status,
+                        isPlaying: true,
+                        playbackPosition: status.positionMillis
             });
         }
 
@@ -196,6 +199,7 @@ export const changeAudio = async (context, select) => {
         updateState,
         onPlaybackStatusUpdate,
         isPlayListRunning,
+        shuffle,
     } = context;
 
     if(isPlayListRunning) return selectAudioFromPlayList(context, select)
@@ -211,10 +215,16 @@ export const changeAudio = async (context, select) => {
         // for next
 
         if(select === 'next') {
-
-            audio = audioFiles[currentAudioIndex + 1];
-            if(isLoaded && !isLastAudio) {
+            if (shuffle) {
+                const randomIndex = Math.floor(Math.random() * audioFiles.length) + 1 ;
+                audio = audioFiles[randomIndex];
+                index = randomIndex;
+            } else {
+                audio = audioFiles[currentAudioIndex + 1];
                 index = currentAudioIndex + 1
+            }
+            
+            if(isLoaded && !isLastAudio) {
                 status = await playNext(playbackObj, audio.uri)
                 playbackObj.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
             }

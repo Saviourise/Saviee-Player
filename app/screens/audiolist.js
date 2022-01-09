@@ -4,6 +4,9 @@ import {AudioContext} from '../context/audioget';
 import {RecyclerListView, LayoutProvider} from 'recyclerlistview';
 import Screen from '../components/screen';
 import AudioListItem from '../components/audiolistitem';
+import SearchComponent from '../components/searchComponent';
+import UnderSearch from '../components/underSearch';
+import Fab from '../components/fab';
 import OptionModal from '../components/optionmodal';
 import PlaylistModal from '../components/playlistmodal';
 import PlayerModal from '../components/playermodal';
@@ -173,7 +176,6 @@ class Audiolist extends Component {
         return (
             <>
         <AudioListItem
-        theme={DarkTheme}
         title={item.filename}
         isPlaying={extendedState.isPlaying}
         activeListItem={this.context.currentAudioIndex === index}
@@ -201,7 +203,10 @@ class Audiolist extends Component {
         {({dataProvider, isPlaying}) => {
             
             return ( 
-                
+               <> 
+               <SearchComponent />
+               <Fab />
+               <UnderSearch />
             <Screen>
             { dataProvider && dataProvider.getSize() > 0 && <RecyclerListView
             dataProvider={dataProvider}
@@ -215,7 +220,7 @@ class Audiolist extends Component {
             // onPlaylistPress={() => {
             //     this.setState({ ...this.state, playlistModalVisible: true, optionModalVisible: false });
             // }}
-            options={[{title: 'Add to playlist', onPress: this.navigateToPlaylist}]}
+            options={[{title: 'Add to playlist', onPress: this.navigateToPlaylist, icon: "playlist-plus"}]}
             currentItem={this.currentItem}
             onClose={() =>
                 this.setState({ ...this.state, optionModalVisible: false})}
@@ -240,6 +245,7 @@ class Audiolist extends Component {
             }}
             />
             </Screen>
+            </>
             )
         }}
     </AudioContext.Consumer>

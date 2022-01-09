@@ -15,6 +15,7 @@ import {
 import { useColorScheme } from 'react-native';
 import {AudioContext} from '../context/audioget';
 import { storeAudioForNextOpening } from '../misc/helper';
+import { Searchbar, Button, Menu, Divider, Provider, Card, IconButton, Colors } from 'react-native-paper';
 
 
 const {width, height} = Dimensions.get('window')
@@ -77,7 +78,17 @@ const convertTime = (time) => {
 
     const context = useContext(AudioContext);
 
-    const { playbackPosition, playbackDuration, updateState, currentAudio } = context;
+    const { playbackPosition, playbackDuration, updateState, currentAudio, shuffle } = context;
+
+    const handleShuffle = async () => {
+        if (shuffle) {
+            updateState(context, {shuffle: false})
+        }
+        if (!shuffle) {
+            updateState(context, {shuffle: true})
+        }
+        
+    }
 
     const calculateSeekBar = () => {
 
@@ -326,7 +337,13 @@ const convertTime = (time) => {
                         </View>
                         
                         <View style={styles.audioControllers}>
-                            <Ionicons name='ios-repeat' onPress={() => console.log("Song Repeat")} size={25} style={{marginHorizontal: 25}} color={color.ACTIVE_BG} />
+                            <IconButton 
+                                icon='shuffle' 
+                                size={20}
+                                color={shuffle ? color.ACTIVE_BG : Colors.black}
+                                style={{marginHorizontal: 25}} 
+                                onPress={handleShuffle} 
+                            />
                             <PlayerButton iconType='PREV' size={25} onPress={handlePrev}/>
                             <PlayerButton onPress={handlePlayPause} style={{marginHorizontal: 25}} iconType={context.isPlaying ? 'PLAY' : 'PAUSE'} />
                             <PlayerButton iconType='NEXT' size={25} onPress={handleNext} />

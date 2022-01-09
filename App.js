@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React, { Component, useState } from 'react'
 import Appnavigator from './app/navigation/appnavigator';
 import Audioget from './app/context/audioget';

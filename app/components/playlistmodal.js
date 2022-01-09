@@ -10,7 +10,7 @@ const PlaylistModal = ({visible, currentItem, onClose, onPlayPress, onPlaylistPr
     const {filename} = currentItem
     return (
         <>
-            <StatusBar hidden={true} />
+            
             <Modal
                 animationType='fade'
                 style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}
