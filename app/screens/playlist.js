@@ -160,7 +160,7 @@ const Playlist = ({navigation}) => {
 
             
         </ScrollView>
-        <PlayListDetail visible={showPlaylist} playList={selectedPlaylist} onClose={() => setShowPlaylist(false)} />
+        {/* <PlayListDetail visible={showPlaylist} playList={selectedPlaylist} onClose={() => setShowPlaylist(false)} /> */}
         
         {playerModalMount &&  <PlayerModal playerModalMount={mountPlayer} />}
         

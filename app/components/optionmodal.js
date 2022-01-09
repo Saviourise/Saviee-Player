@@ -17,21 +17,24 @@ const OptionModal = ({
     const {filename} = currentItem
     const context = useContext(AudioContext)
     const {addedToQueue, updateState} = context
-    const [queue, setQueue] = useState([])
+    //const [queue, setQueue] = useState([])
 
     const addToQueue = () => {
-        queue.unshift(currentItem)
-        setQueue(queue)
-        //console.log(queue)
+        const queue = addedToQueue
         //console.log(addedToQueue)
+        queue.unshift(currentItem)
+        //setQueue(queue)
+        console.log(queue)
+        console.log(addedToQueue)
         updateState(context, {
             addedToQueue: queue
         })
     }
 
     const addToQueuePush = () => {
+        const queue = addedToQueue
         queue.push(currentItem)
-        setQueue(queue)
+        //setQueue(queue)
         //console.log(queue)
         //console.log(addedToQueue)
         updateState(context, {

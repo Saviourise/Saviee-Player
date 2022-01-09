@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Audiolist from '../screens/audiolist';
 import Player from '../screens/player';
 import Playlist from '../screens/playlist';
+import SearchScreen from '../screens/searchscreen';
 import {MaterialIcons, FontAwesome5, AntDesign, MaterialCommunityIcons} from '@expo/vector-icons';
 import color from '../misc/color';
 import PlayListDetail from '../screens/playlistdetail';
@@ -18,6 +19,13 @@ const PlayListScreen = () => {
     </Stack.Navigator>
 }
 
+const HomeScreen = () => {
+    return <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name='HomeScreen' component={Player} />
+        <Stack.Screen name='SearchScreen' component={SearchScreen} />
+    </Stack.Navigator>
+}
+
 const Appnavigator = () => {
     return <Tab.Navigator screenOptions={() => ({
             headerShown: false,
@@ -26,7 +34,7 @@ const Appnavigator = () => {
             tabBarInactiveTintColor: color.FONT_LIGHT,
         })}>
         <Tab.Screen name='Home'
-        component={Player}
+        component={HomeScreen}
         options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({color, size}) => {

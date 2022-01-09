@@ -17,6 +17,7 @@ const PlayListDetail = (props) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedItem, setSelectedItem] = useState({})
     const [audios, setAudios] = useState(playList.audios)
+    
 
     const playAudio = async (audio) => {
         await selectAudio(audio, context, {

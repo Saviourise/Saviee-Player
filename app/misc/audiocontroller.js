@@ -200,6 +200,7 @@ export const changeAudio = async (context, select) => {
         onPlaybackStatusUpdate,
         isPlayListRunning,
         shuffle,
+        addedToQueue,
     } = context;
 
     if(isPlayListRunning) return selectAudioFromPlayList(context, select)
@@ -211,17 +212,25 @@ export const changeAudio = async (context, select) => {
         let audio;
         let index;
         let status;
+        let filteredItems;
 
         // for next
-
+            
         if(select === 'next') {
-            if (shuffle) {
-                const randomIndex = Math.floor(Math.random() * audioFiles.length) + 1 ;
-                audio = audioFiles[randomIndex];
-                index = randomIndex;
+            if(Object.keys(addedToQueue).length != 0) {
+                audio = addedToQueue[0];
+                filteredItems = addedToQueue.filter(item => item !== addedToQueue[0])
+                index = audioFiles.findIndex(({id}) => id === audio.id)
+                
             } else {
-                audio = audioFiles[currentAudioIndex + 1];
-                index = currentAudioIndex + 1
+                if(shuffle) {
+                    const randomIndex = Math.floor(Math.random() * audioFiles.length) + 1 ;
+                    audio = audioFiles[randomIndex];
+                    index = randomIndex;
+                } else {
+                    audio = audioFiles[currentAudioIndex + 1];
+                    index = currentAudioIndex + 1
+                }
             }
             
             if(isLoaded && !isLastAudio) {
@@ -281,6 +290,7 @@ export const changeAudio = async (context, select) => {
             currentAudioIndex: index,
             playbackPosition: null,
             playbackDuration: null,
+            addedToQueue: filteredItems,
         });
 
         storeAudioForNextOpening(audio, index);
