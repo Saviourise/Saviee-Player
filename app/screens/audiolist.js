@@ -100,7 +100,7 @@ class Audiolist extends Component {
             
             return ( 
                <> 
-               <View style={{flexDirection: 'row', width, padding: 10, justifyContent: 'center',}}>
+               <View style={{flexDirection: 'row', width, padding: 10, backgroundColor: color.APP_BG, justifyContent: 'center',}}>
                     <Searchbar
                         placeholder='Search for music'
                         style={styles.input}
@@ -127,7 +127,8 @@ class Audiolist extends Component {
             currentItem={this.currentItem}
             onClose={() =>
                 this.setState({ ...this.state, optionModalVisible: false})}
-            visible={this.state.optionModalVisible} />
+            visible={this.state.optionModalVisible}
+            navigation={this.props.navigation} />
 
             <PlaylistModal
             onPlaylistPress={() => {

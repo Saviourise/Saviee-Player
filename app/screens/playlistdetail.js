@@ -173,6 +173,7 @@ const PlayListDetail = (props) => {
                     {title: 'Remove from playlist', onPress: removeAudio, icon: "playlist-remove"}
                 ]} 
                 currentItem={selectedItem}
+                navigation={props.navigation}
             />    
         </>
     )

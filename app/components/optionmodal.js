@@ -12,7 +12,9 @@ const OptionModal = ({
     onClose,
     onPlayPress,
     onPlaylistPress,
-    options}) => {
+    options,
+    navigation
+}) => {
 
     const {filename} = currentItem
     const context = useContext(AudioContext)
@@ -24,8 +26,8 @@ const OptionModal = ({
         //console.log(addedToQueue)
         queue.unshift(currentItem)
         //setQueue(queue)
-        console.log(queue)
-        console.log(addedToQueue)
+        // console.log(queue)
+        // console.log(addedToQueue)
         updateState(context, {
             addedToQueue: queue
         })
@@ -41,6 +43,11 @@ const OptionModal = ({
             addedToQueue: queue
         })
     }
+
+    const viewQueue = () => {
+        const queue = addedToQueue
+        navigation.navigate('QueueScreen')
+    } 
 
     return (
         <>
@@ -61,6 +68,31 @@ const OptionModal = ({
                         />
                     </View>
                     <View style={styles.optionContainer}>
+            
+                        <TouchableWithoutFeedback onPress={addToQueue}>
+                            <View style={{flexDirection: 'row', paddingVertical: 10,}}>
+                                <MaterialCommunityIcons 
+                                    name="play-box-multiple"
+                                    size={20}
+                                    style={styles.textIcon}
+                                />
+                                <Text style={styles.option}>Play Next
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+
+                        <TouchableWithoutFeedback onPress={addToQueuePush}>
+                            <View style={{flexDirection: 'row', paddingVertical: 10,}}>
+                                <MaterialIcons 
+                                    name="queue"
+                                    size={20}
+                                    style={styles.textIcon}
+                                />
+                                <Text style={styles.option}>Add to playing queue
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+
                         {options.map(optn => {
                             return (<TouchableWithoutFeedback key={optn.title} onPress={optn.onPress}>
                                         <View style={{flexDirection: 'row', paddingVertical: 10,}}>
@@ -74,29 +106,21 @@ const OptionModal = ({
                                         </View>
                                     </TouchableWithoutFeedback>)
                         })}
-                        <TouchableWithoutFeedback onPress={addToQueue}>
-                            <View style={{flexDirection: 'row', paddingVertical: 10,}}>
-                                <MaterialCommunityIcons 
-                                    name="play-box-multiple"
-                                    size={20}
-                                    style={styles.textIcon}
-                                />
-                                <Text style={styles.option}>Play Next
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={addToQueuePush}>
+
+                        <TouchableWithoutFeedback onPress={viewQueue}>
                             <View style={{flexDirection: 'row', paddingVertical: 10,}}>
                                 <MaterialIcons 
-                                    name="queue"
+                                    name="playlist-play"
                                     size={20}
                                     style={styles.textIcon}
                                 />
-                                <Text style={styles.option}>Add to playing queue
+                                <Text style={styles.option}>View playing queue
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
+
                         <Divider />
+
                         <TouchableWithoutFeedback>
                             <View style={{flexDirection: 'row', paddingVertical: 10,}}>
                                 <MaterialCommunityIcons 
@@ -105,6 +129,18 @@ const OptionModal = ({
                                     style={styles.textIcon}
                                 />
                                 <Text style={styles.option}>Song Details  
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+
+                        <TouchableWithoutFeedback>
+                            <View style={{flexDirection: 'row', paddingVertical: 10,}}>
+                                <MaterialCommunityIcons 
+                                    name="delete"
+                                    size={20}
+                                    style={styles.textIcon}
+                                />
+                                <Text style={styles.option}>Delete Song  
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>

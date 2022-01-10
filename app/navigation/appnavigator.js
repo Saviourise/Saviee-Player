@@ -8,6 +8,7 @@ import SearchScreen from '../screens/searchscreen';
 import {MaterialIcons, FontAwesome5, AntDesign, MaterialCommunityIcons} from '@expo/vector-icons';
 import color from '../misc/color';
 import PlayListDetail from '../screens/playlistdetail';
+import QueueScreen from '../screens/queuescreen';
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -16,6 +17,7 @@ const PlayListScreen = () => {
     return <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name='PlayList' component={Playlist} />
         <Stack.Screen name='PlayListDetail' component={PlayListDetail} />
+        <Stack.Screen name='QueueScreen' component={QueueScreen} />
     </Stack.Navigator>
 }
 
@@ -23,6 +25,7 @@ const HomeScreen = () => {
     return <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name='HomeScreen' component={Player} />
         <Stack.Screen name='SearchScreen' component={SearchScreen} />
+        <Stack.Screen name='QueueScreen' component={QueueScreen} />
     </Stack.Navigator>
 }
 
@@ -30,6 +33,7 @@ const PlayerScreen = () => {
     return <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name='PlayerScreen' component={Audiolist} />
         <Stack.Screen name='SearchScreen' component={SearchScreen} />
+        <Stack.Screen name='QueueScreen' component={QueueScreen} />
     </Stack.Navigator>
 }
 

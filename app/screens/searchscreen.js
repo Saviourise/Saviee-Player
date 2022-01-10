@@ -50,7 +50,7 @@ const SearchScreen = (props) => {
             let count = Object.keys(audioFiles).length;
 
             for (let index = 0; index < count; index++) {
-                if (audioFiles[index].filename.includes(text)) {
+                if (audioFiles[index].filename.toLowerCase().includes(text.toLowerCase())) {
                     result.push(audioFiles[index])
                 }
             }
@@ -101,8 +101,9 @@ const SearchScreen = (props) => {
             ) : (
                 <Text style={{
                     fontWeight: 'bold',
-                    color: color.FONT_LIGHT,
-                    fontSize: 30,
+                    color: color.ACTIVE_BG,
+                    opacity: 0.3,
+                    fontSize: 20,
                     paddingTop: 50,
                 }}>
                     Continue Your Search
@@ -117,6 +118,7 @@ const SearchScreen = (props) => {
                     {title: 'Add to playlist', onPress: navigateToPlaylist, icon: "playlist-plus"}
                 ]} 
                 currentItem={selectedItem}
+                navigation={props.navigation}
             />
 
             <PlaylistModal
