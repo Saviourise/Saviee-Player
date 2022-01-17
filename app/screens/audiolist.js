@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { ScrollView, Text, StyleSheet, Dimensions, View } from 'react-native';
+import React, { Component, useEffect } from 'react';
+import { ScrollView, Text, StyleSheet, Dimensions, View, SafeAreaView, } from 'react-native';
 import {AudioContext} from '../context/audioget';
 import {RecyclerListView, LayoutProvider} from 'recyclerlistview';
 import Screen from '../components/screen';
@@ -9,7 +9,6 @@ import UnderSearch from '../components/underSearch';
 import Fab from '../components/fab';
 import OptionModal from '../components/optionmodal';
 import PlaylistModal from '../components/playlistmodal';
-import PlayerModal from '../components/playermodal';
 import OpenPlayerModal from '../components/openplayermodal';
 import { Audio } from 'expo-av';
 import {
@@ -22,6 +21,7 @@ import { play, pause, resume, playNext, selectAudio, didMount } from '../misc/au
 import { storeAudioForNextOpening } from '../misc/helper';
 import color from '../misc/color';
 import { Searchbar, Button, Menu, Divider, Provider, Card, } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 width = Dimensions.get('window').width
 
@@ -35,6 +35,14 @@ class Audiolist extends Component {
             optionModalVisible: false,
             playlistModalVisible: false,
             playerModalMount: false,
+            backgroundColor: color.APP_BG,
+            font: color.FONT,
+            search: color.SEARCH,
+            fontMedium: color.FONT_MEDIUM,
+            fontLight: color.FONT_LIGHT,
+            modalBg: color.MODAL_BG,
+            activeBg: color.ACTIVE_BG,
+            activeFont: color.ACTIVE_FONT,
         }
 
         this.currentItem = {}
@@ -63,8 +71,24 @@ class Audiolist extends Component {
         
     }
 
-    componentDidMount() {
+    componentDidMount = async () => {
         this.context.loadPreviousAudio();
+        let themed = await AsyncStorage.getItem('theme');
+        if(themed === "light") {
+            this.setState({...this.state, backgroundColor: color.APP_BG,})
+            this.setState({...this.state, font: color.FONT,})
+            this.setState({...this.state, search: color.SEARCH,})
+            this.setState({...this.state, activeFont: color.ACTIVE_FONT,})
+            this.setState({...this.state, fontMedium: color.FONT_MEDIUM,})
+            this.setState({...this.state, fontLight: color.FONT_LIGHT,})
+        } else {
+            this.setState({...this.state, backgroundColor: color.DARK_APP_BG,})
+            this.setState({...this.state, font: color.DARK_FONT,})
+            this.setState({...this.state, search: color.DARK_SEARCH,})
+            this.setState({...this.state, activeFont: color.DARK_ACTIVE_FONT,})
+            this.setState({...this.state, fontMedium: color.DARK_FONT_MEDIUM,})
+            this.setState({...this.state, fontLight: color.DARK_FONT_LIGHT,})
+        }
     }
 
     rowRenderer = (type, item, index, extendedState) => {
@@ -92,6 +116,8 @@ class Audiolist extends Component {
     navigateToPlaylist = () => {
         this.setState({ ...this.state, playlistModalVisible: true, optionModalVisible: false });
     }
+
+    
     
   render() {
      
@@ -100,23 +126,30 @@ class Audiolist extends Component {
             
             return ( 
                <> 
-               <View style={{flexDirection: 'row', width, padding: 10, backgroundColor: color.APP_BG, justifyContent: 'center',}}>
+               <View style={{flexDirection: 'row', width, padding: 10, backgroundColor: this.state.backgroundColor, justifyContent: 'center',}}>
                     <Searchbar
                         placeholder='Search for music'
-                        style={styles.input}
+                        style={{width: width - 40, fontSize: 18, backgroundColor: this.state.search,}}
+                        inputStyle={{color: this.state.font}}
+                        iconColor={this.state.fontLight}
+                        placeholderTextColor={this.state.fontLight}
                         onChangeText={(text) => {this.props.navigation.navigate('SearchScreen', text)}}
                         value={""}
                     />
                 </View>
                <Fab />
-               <UnderSearch />
+                
+               
             <Screen>
+            <UnderSearch />
             { dataProvider && dataProvider.getSize() > 0 && <RecyclerListView
             dataProvider={dataProvider}
             layoutProvider={this.layoutProvider}
             rowRenderer={this.rowRenderer}
             extendedState={{isPlaying}}
             /> }
+            </Screen>
+            
 
             <OptionModal
             // onPlayPress={() => console.log("Playing Audio")}
@@ -141,14 +174,11 @@ class Audiolist extends Component {
             onClose={() =>
             this.setState({ ...this.state, playlistModalVisible: false})}
             visible={this.state.playlistModalVisible} />
-
-            {this.state.playerModalMount &&  <PlayerModal playerModalMount={this.mountPlayer} />}
             
-            <OpenPlayerModal openPlayer={() => {
-            this.setState({ ...this.state, playerModalMount: true });
-            }}
-            />
-            </Screen>
+            <OpenPlayerModal onPress={() => {
+                this.props.navigation.navigate('PlayerModal')
+            }} />
+            
             </>
             )
         }}
@@ -165,14 +195,7 @@ const styles = StyleSheet.create({
 
         text: {
             padding: 10,
-            borderBottomColor: '#ddd',
-            borderBottomWidth: 2,
         },
-        input: {
-            width: width - 40,
-            color: color.ACTIVE_BG,
-            fontSize: 18,
-    },
     });
 
 export default Audiolist;

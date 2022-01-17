@@ -1,8 +1,21 @@
-import React from 'react'
-import { View, Text, StyleSheet, StatusBar } from 'react-native'
+import React, {useState, useEffect} from 'react'
+import { View, Text, StyleSheet, StatusBar, ScrollView, } from 'react-native'
 import color from '../misc/color'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Searchbar, Button, Menu, Divider, Provider, Card, IconButton, Colors } from 'react-native-paper';
 
 const Screen = ({children}) => {
+
+    const [backgroundColor, setBackgroundColor] = useState(color.APP_BG);
+
+    useEffect(async () => {
+        let themed = await AsyncStorage.getItem('theme');
+        if(themed === "light") {
+            setBackgroundColor(color.APP_BG)
+        } else {
+            setBackgroundColor(color.DARK_APP_BG)
+        }
+    }, [])
     return ( <>
         <StatusBar
         animated={true}
@@ -11,19 +24,17 @@ const Screen = ({children}) => {
         showHideTransition='fade'
         hidden={false}
       />
-        <View style={styles.container}>
+      <Provider>
+        <View style={{flex: 1, backgroundColor: backgroundColor, minHeight: 1, minWidth: 1}}>
+            
             {children}
+            
         </View>
+        </Provider>
         </>
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: color.APP_BG,
-        
-    },
-})
+const styles = StyleSheet.create({})
 
 export default Screen

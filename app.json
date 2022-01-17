@@ -1,5 +1,6 @@
 {
   "expo": {
+    
     "name": "MusicAppProject",
     "slug": "MusicAppProject",
     "version": "1.0.0",
@@ -7,8 +8,7 @@
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff",
+      "resizeMode": "cover",
       "plugins": [
         [
           "expo-media-library",
@@ -20,6 +20,7 @@
         ]
       ]
     },
+    
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -38,7 +39,20 @@
     },
     "android": {
       "package": "com.Saviee.Saviee_Player"
-    }
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "saviee",
+            "project": "saviee",
+            "authToken": "a8646cc14e7c48439da3e38b8277b4ad512190a6850041dea2c8edf2c36eecf3"
+          }
+        }
+      ]
+    },
+    "plugins": ["sentry-expo"]
   },
   "android": {
     "adaptiveIcon": {
@@ -48,5 +62,6 @@
   },
   "web": {
     "favicon": "./assets/favicon.png"
-  }
+  },
+  
 }

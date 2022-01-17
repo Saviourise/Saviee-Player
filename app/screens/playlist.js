@@ -4,9 +4,13 @@ import PlaylistInputModal from "../components/playlistinputmodal";
 import OpenPlayerModal from '../components/openplayermodal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AudioContext} from '../context/audioget';
-import PlayerModal from '../components/playermodal';
 import PlayListDetail from '../components/playlistdetail'
+import { LinearGradient } from 'expo-linear-gradient';
 import color from '../misc/color';
+import { Entypo, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import Fab from '../components/fab';
+import { Searchbar, Button, Menu, Divider, Provider, Avatar, Card, Title, Paragraph, IconButton, } from 'react-native-paper';
+
 
 let selectedPlaylist = {};
 
@@ -49,7 +53,7 @@ const Playlist = ({navigation}) => {
         if(result === null) {
             const defaultPlaylist = {
                 id: Date.now(),
-                title: 'My Favourite',
+                title: 'Favourites',
                 audios: [],
             }
 
@@ -61,13 +65,11 @@ const Playlist = ({navigation}) => {
         updateState(context, {playList: JSON.parse(result)});
     }
 
-    useEffect(() => {
-        if(!playList.length) {
-            renderPlaylist()
-        }
-    }, [])
-
     const [modalVisible, setModalVisible] = useState(false);
+
+    const searchPress = (text) => {
+        navigation.navigate('SearchScreen', text)
+    }
 
     const handleBannerPress = async (playList) => {
         // Update Playlist if there is any selected audio
@@ -119,38 +121,122 @@ const Playlist = ({navigation}) => {
         }
 
         // Open playlist if no audio selected
-
         selectedPlaylist = playList;
+        //console.log(playList)
         navigation.navigate('PlayListDetail', playList)
         // setShowPlaylist(true);
     }
+
+    const [backgroundColor, setBackgroundColor] = useState(color.APP_BG);
+    const [font, setFont] = useState(color.FONT);
+    const [search, setSearch] = useState(color.SEARCH);
+    const [fontMedium, setFontMedium] = useState(color.FONT_MEDIUM);
+    const [fontLight, setFontLight] = useState(color.FONT_LIGHT);
+    const [modalBg, setModalBg] = useState(color.MODAL_BG);
+    const [activeBg, setActiveBg] = useState(color.ACTIVE_BG);
+    const [activeFont, setActiveFont] = useState(color.ACTIVE_FONT);
+
+     let result2 = {}
+
+    useEffect(async () => {
+        if(!playList.length) {
+            renderPlaylist()
+        }
+
+        let themed = await AsyncStorage.getItem('theme');
+        if(themed === "light") {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearch(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
+        } else {
+            setBackgroundColor(color.DARK_APP_BG)
+            setFont(color.DARK_FONT)
+            setSearch(color.DARK_SEARCH)
+            setActiveFont(color.DARK_ACTIVE_FONT)
+            setFontMedium(color.DARK_FONT_MEDIUM)
+            setFontLight(color.DARK_FONT_LIGHT)
+        }
+    }, [])
  
     return (
         <>
-        <ScrollView contentContainerStyle={styles.container}>
+        <View style={[styles.container, {backgroundColor: backgroundColor,}]}>
+
+            <View style={{flexDirection: 'row', width, padding: 10, justifyContent: 'center',}}>
+                <Searchbar
+                    placeholder='Search for music'
+                    style={{width: width - 40, fontSize: 18, backgroundColor: search,}}
+                    inputStyle={{color: font}}
+                    iconColor={fontLight}
+                    placeholderTextColor={fontLight}
+                    onChangeText={(text) => {searchPress(text)}}
+                    value={""}
+                />
+            </View>
             
             <TouchableOpacity onPress={() => setModalVisible(true)} style={{margin: 10,}}>
                 <Text style={styles.playlistButton}>+ Create New Playlist</Text>
             </TouchableOpacity>
 
-            {playList.length ? playList.map(item => 
-                <TouchableOpacity
-                    key={item.id.toString()}
-                    style={styles.playlistBanner}
-                    onPress={() => handleBannerPress(item)}
-                >
-                    <Text style={styles.favourite}>{item.title}</Text>
-                    <Text style={styles.audioCount}>
-                        {
-                        item.audios.length > 1
-                        ? `${item.audios.length} Songs`
-                        : `${item.audios.length} Song`
-                        }
-                    </Text>
-                </TouchableOpacity>
+            <View style={{ flex:1, width: '100%'}}>
+
+                {playList.length ? (<FlatList
+                    contentContainerStyle={styles.listContainer}
+                    data={playList}
+                    key={item => item.id.toString()}
+                    renderItem={({item}) => (
+                        <TouchableOpacity
+                            key={item.id.toString()}
+                            style={item.title === "Favourites" ? {
+                                padding: 10, 
+                                width: '45%', 
+                                marginBottom: 10, 
+                                marginHorizontal: 10, 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                            } : {
+                                padding: 10, 
+                                width: '45%', 
+                                marginBottom: 10, 
+                                marginHorizontal: 10, 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                            }}
+                            onPress={() => handleBannerPress(item)}
+                        >
+                            
+                            <View style={{
+                                backgroundColor: "#000", 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                borderRadius: 5,
+                                flexBasis: 40,
+                                height: 100,
+                                width: 100,
+                            }}>
+                                <MaterialIcons name="music-note" color={color.FONT_LIGHT} size={35} />
+                            </View>
+                            
+                            <Text style={item.title === "Favourites"  ? {color: "#f00"} : {color: color.ACTIVE_BG}}>{item.title}</Text>
+                            <Text style={{color: fontLight,}}>
+                                {
+                                item.audios.length > 1
+                                ? `${item.audios.length} Songs`
+                                : `${item.audios.length} Song`
+                                }
+                            </Text>
+                            
+                        </TouchableOpacity>
+                    )}
+                    numColumns={2}
+                    
+                />
             ) : null}
 
-            
+            </View>
 
             <PlaylistInputModal
                 visible={modalVisible}
@@ -159,23 +245,19 @@ const Playlist = ({navigation}) => {
             />
 
             
-        </ScrollView>
-        {/* <PlayListDetail visible={showPlaylist} playList={selectedPlaylist} onClose={() => setShowPlaylist(false)} /> */}
+        </View>
+
+        <Fab />
         
-        {playerModalMount &&  <PlayerModal playerModalMount={mountPlayer} />}
-        
-        <OpenPlayerModal openPlayer={() => {
-            setPlayerModalMount(true)
-            }} />
+        <OpenPlayerModal onPress={() => {navigation.navigate('PlayerModal')}}/>
             </>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
         paddingTop: 0,
-        backgroundColor: color.APP_BG,
+        flex: 1,
     },
     playlistButton: {
         color: color.ACTIVE_BG,
@@ -183,12 +265,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 14,
         padding: 5,
-    },
-    playlistBanner: {
-        padding: 10,
-        marginBottom: 10,
-        backgroundColor: 'rgba(204, 204, 204, 0.3)',
-        borderRadius: 5,
     },
     favourite: {
         fontSize: 18,

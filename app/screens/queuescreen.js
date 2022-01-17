@@ -64,7 +64,6 @@ const QueueScreen = (props) => {
                 />
             ) : (
                 <Text style={{
-                    fontWeight: 'bold',
                     color: color.ACTIVE_BG,
                     opacity: 0.3,
                     fontSize: 20,

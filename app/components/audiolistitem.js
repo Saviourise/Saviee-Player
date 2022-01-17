@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
 import { Entypo, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import color from '../misc/color';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IconButton, Colors } from 'react-native-paper';
 
 const getThumbnailText = (filename) => filename[0]
@@ -40,11 +41,42 @@ const renderPlayPauseIcon = isPlaying => {
 }
 
 
+
+
 const AudioListItem = ({title, duration, onOptionPress, onAudioPress, isPlaying, activeListItem}) => {
+    
+    const [backgroundColor, setBackgroundColor] = useState(color.APP_BG);
+    const [font, setFont] = useState(color.FONT);
+    const [search, setSearch] = useState(color.SEARCH);
+    const [fontMedium, setFontMedium] = useState(color.FONT_MEDIUM);
+    const [fontLight, setFontLight] = useState(color.FONT_LIGHT);
+    const [modalBg, setModalBg] = useState(color.MODAL_BG);
+    const [activeBg, setActiveBg] = useState(color.ACTIVE_BG);
+    const [activeFont, setActiveFont] = useState(color.ACTIVE_FONT);
+
+    useEffect(async () => {
+        let themed = await AsyncStorage.getItem('theme');
+        if(themed === "light") {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearch(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
+        } else {
+            setBackgroundColor(color.DARK_APP_BG)
+            setFont(color.DARK_FONT)
+            setSearch(color.DARK_SEARCH)
+            setActiveFont(color.DARK_ACTIVE_FONT)
+            setFontMedium(color.DARK_FONT_MEDIUM)
+            setFontLight(color.DARK_FONT_LIGHT)
+        }
+    })
+    
     return (
     <>
-    <View style={styles.container1}>
-      <View style={[styles.container, {backgroundColor: activeListItem ? "rgba(51, 136, 255, 0.2)" : color.APP_BG}]}>
+    <View style={{backgroundColor: backgroundColor, width,}}>
+      <View style={[styles.container, {backgroundColor: activeListItem ? "rgba(51, 136, 255, 0.2)" : backgroundColor}]}>
 
       <TouchableOpacity onPress={onAudioPress}>
         <View style={styles.leftContainer}>
@@ -58,7 +90,7 @@ const AudioListItem = ({title, duration, onOptionPress, onAudioPress, isPlaying,
                 
                 
             <View style={styles.titleContainer}>
-  <Text numberOfLines={1} style={styles.title}>
+  <Text numberOfLines={1} style={[styles.title, {color: font}]}>
                     {title.split('.').slice(0, -1).join('.')}
                     </Text>
 <Text style={styles.timeText}>
@@ -97,10 +129,6 @@ const styles = StyleSheet.create({
         width,
         zIndex: 10,
         padding: 10,
-    },
-    container1: {
-        backgroundColor: color.APP_BG,
-        width,
     },
     leftContainer: {
         flexDirection: 'row',

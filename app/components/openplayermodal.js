@@ -5,7 +5,6 @@ import Screen from '../components/screen';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Slider from "@react-native-community/slider";
 import PlayerButton from '../components/playerbutton';
-import GestureRecognizer from 'react-native-swipe-gestures';
 import { useColorScheme } from 'react-native';
 import {
   NavigationContainer,
@@ -13,15 +12,17 @@ import {
   DarkTheme,
 } from '@react-navigation/native';
 import {AudioContext} from '../context/audioget';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { play, pause, resume, playNext, selectAudio, changeAudio, moveAudio } from '../misc/audiocontroller';
 import { storeAudioForNextOpening } from '../misc/helper';
 import { Searchbar, Button, Menu, Divider, Provider, Card, Surface, } from 'react-native-paper';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 
 
 const {width} = Dimensions.get('window')
 
-const OpenPlayerModal = ({ openPlayer}) => {
+const OpenPlayerModal = ({onPress}) => {
 
     const [currentPosition, setCurrentPosition] = useState(0)
 
@@ -109,38 +110,80 @@ const convertTime = (time) => {
     }
 
 
-    if(!context.currentAudio) return null;
+    //if(!context.currentAudio) return null;
 
     const calculateSeekBar = () => {
         if(playbackPosition !== null && playbackDuration !== null) {
             return playbackPosition / playbackDuration;
         }
 
-        if(currentAudio.lastPosition) {
+        if(currentAudio?.lastPosition) {
             return currentAudio.lastPosition / (currentAudio.duration * 1000)
         }
 
         return 0
     }
 
+    const [backgroundColor, setBackgroundColor] = useState(color.APP_BG);
+    const [font, setFont] = useState(color.FONT);
+    const [search, setSearch] = useState(color.SEARCH);
+    const [fontMedium, setFontMedium] = useState(color.FONT_MEDIUM);
+    const [fontLight, setFontLight] = useState(color.FONT_LIGHT);
+    const [modalBg, setModalBg] = useState(color.MODAL_BG);
+    const [activeBg, setActiveBg] = useState(color.ACTIVE_BG);
+    const [activeFont, setActiveFont] = useState(color.ACTIVE_FONT);
+    const [barColor, setBarColor] = useState("dark-content")
+
+    useEffect(async () => {
+        let themed = await AsyncStorage.getItem('theme');
+        if(themed === "light") {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearch(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
+            setBarColor("dark-content")
+        } else {
+            setBackgroundColor(color.DARK_APP_BG)
+            setFont(color.DARK_FONT)
+            setSearch(color.DARK_SEARCH)
+            setActiveFont(color.DARK_ACTIVE_FONT)
+            setFontMedium(color.DARK_FONT_MEDIUM)
+            setFontLight(color.DARK_FONT_LIGHT)
+            setBarColor("light-content")
+        }
+    }, [])
+
+    const config = {
+      velocityThreshold: 0.3,
+      directionalOffsetThreshold: 80
+    };
+
     return <>
         <StatusBar
             animated={true}
-            backgroundColor={color.APP_BG}
+            backgroundColor={backgroundColor}
             showHideTransition='fade'
             hidden={false}
-            barStyle="dark-content"
+            barStyle={barColor}
         />
         <Surface style={styles.surface}>
-        <TouchableWithoutFeedback onPress={openPlayer} > 
+        <GestureRecognizer
+            onSwipeUp={onPress}
+            onSwipeLeft={handleNext}
+            onSwipeRight={handlePrev}
+            config={config}
+        >
+        <TouchableWithoutFeedback onPress={onPress} > 
             <View style={styles.modalContainer}>
-                <View style={styles.modal}>
+                <View style={{width, position: 'relative', paddingTop: 0, backgroundColor: search,}}>
                     <View style={{flexDirection: 'row',}}>
-                    <Text style={styles.title} numberOfLines={1}>{context.currentAudio.filename}</Text>
+                    <Text style={{color: font, fontSize: 18, width: width - 120, fontWeight: 'bold', padding: 20, paddingBottom: 0, paddingTop: 10, marginTop: 5,}} numberOfLines={1}>{currentAudio?.filename}</Text>
                     <View style={styles.audioControllers}>
-                        <PlayerButton iconType='PREV' size={20} onPress={handlePrev} style={{marginTop: 5}} iconColor={color.FONT} />
-                        <PlayerButton iconColor={color.FONT} onPress={handlePlayPause} style={{marginHorizontal: 15}} iconType={context.isPlaying ? 'PLAY' : 'PAUSE'} size={30} />
-                        <PlayerButton iconColor={color.FONT} style={{marginTop: 5}} iconType='NEXT' size={20} onPress={handleNext} />
+                        <PlayerButton iconType='PREV' size={20} onPress={handlePrev} style={{marginTop: 5}} iconColor={font} />
+                        <PlayerButton iconColor={font} onPress={handlePlayPause} style={{marginHorizontal: 15}} iconType={context.isPlaying ? 'PLAY' : 'PAUSE'} size={30} />
+                        <PlayerButton iconColor={font} style={{marginTop: 5}} iconType='NEXT' size={20} onPress={handleNext} />
                     </View>
                     </View>
                     <View style={styles.sliderContainer}>
@@ -175,6 +218,7 @@ const convertTime = (time) => {
             </View>
             
         </TouchableWithoutFeedback>
+        </GestureRecognizer>
         </Surface>
     </>
 }
@@ -184,7 +228,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: width + 33,
         marginHorizontal: -16,
-        height: 20,
         paddingBottom: 10,
     },
     surface: {
@@ -199,7 +242,6 @@ const styles = StyleSheet.create({
     modal: {
         width,
         position: 'relative',
-        backgroundColor: '#e1e1e1',
         paddingTop: 0,
     },
     title: {
@@ -207,7 +249,6 @@ const styles = StyleSheet.create({
         width: width - 120,
         fontWeight: 'bold',
         padding: 20,
-        color: color.FONT,
         paddingBottom: 0,
         paddingTop: 10,
         marginTop: 5,

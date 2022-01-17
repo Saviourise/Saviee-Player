@@ -1,7 +1,10 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableWithoutFeedback, Dimensions, FlatList } from 'react-native'
 import { Searchbar, Button, Menu, Divider, Provider, Card, } from 'react-native-paper';
 import color from '../misc/color';
+import Screen from '../components/screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Fab from '../components/fab';
 import AudioListItem from '../components/audiolistitem';
 import {AudioContext} from '../context/audioget';
 import OptionModal from '../components/optionmodal';
@@ -61,15 +64,46 @@ const SearchScreen = (props) => {
         
        
     }
+
+    const [backgroundColor, setBackgroundColor] = useState(color.APP_BG);
+    const [font, setFont] = useState(color.FONT);
+    const [searchC, setSearchC] = useState(color.SEARCH);
+    const [fontMedium, setFontMedium] = useState(color.FONT_MEDIUM);
+    const [fontLight, setFontLight] = useState(color.FONT_LIGHT);
+    const [modalBg, setModalBg] = useState(color.MODAL_BG);
+    const [activeBg, setActiveBg] = useState(color.ACTIVE_BG);
+    const [activeFont, setActiveFont] = useState(color.ACTIVE_FONT);
+
+    useEffect(async () => {
+        let themed = await AsyncStorage.getItem('theme');
+        if(themed === "light") {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearchC(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
+        } else {
+            setBackgroundColor(color.DARK_APP_BG)
+            setFont(color.DARK_FONT)
+            setSearchC(color.DARK_SEARCH)
+            setActiveFont(color.DARK_ACTIVE_FONT)
+            setFontMedium(color.DARK_FONT_MEDIUM)
+            setFontLight(color.DARK_FONT_LIGHT)
+        }
+    }, [])
    
     
     return (
         <>
-            <View style={styles.container}>
+            <View style={{flex: 1, padding: 10, paddingHorizontal: 0, alignItems: 'center', backgroundColor: backgroundColor,}}>
                 <View style={{flexDirection: 'row', width, padding: 10, justifyContent: 'center',}}>
                     <Searchbar
                         placeholder='Search for music'
-                        style={styles.input}
+                        style={{width: width - 40, fontSize: 18, backgroundColor: searchC,}}
+                        inputStyle={{color: font}}
+                        iconColor={fontLight}
+                        placeholderTextColor={fontLight}
                         value={searchItem}
                         onChangeText={(text) => {
                             setSearchItem(text)
@@ -77,7 +111,7 @@ const SearchScreen = (props) => {
                         }}
                     />
                 </View>
-
+                <Screen>
                 {searchResult.length ? (<FlatList
                     contentContainerStyle={styles.listContainer}
                     data={searchResult}
@@ -109,7 +143,11 @@ const SearchScreen = (props) => {
                     Continue Your Search
                 </Text>
             )}
+            </Screen>
             </View>
+
+            <Fab />
+
 
             <OptionModal
                 visible={modalVisible}
@@ -142,17 +180,4 @@ export default SearchScreen
 
 const {width} = Dimensions.get('window')
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        paddingHorizontal: 0,
-        alignItems: 'center',
-        backgroundColor: color.APP_BG,
-    },
-    input: {
-        width: width - 40,
-        color: color.ACTIVE_BG,
-        fontSize: 18,
-    },
-})
+const styles = StyleSheet.create({})

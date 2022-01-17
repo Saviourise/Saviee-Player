@@ -32,6 +32,7 @@ export default class Audioget extends Component {
             playbackDuration: null,
             addedToQueue: [],
             shuffle: false,
+            darkTheme: false,
         }
 
         this.totalAudioCount = 0;
@@ -246,6 +247,7 @@ export default class Audioget extends Component {
             activePlayList,
             addedToQueue,
             shuffle,
+            darkTheme,
         } = this.state
         if(permissionError) {
             return <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
@@ -271,6 +273,7 @@ export default class Audioget extends Component {
             addedToQueue,
             activePlayList,
             shuffle,
+            darkTheme,
             updateState: this.updateState,
             loadPreviousAudio: this.loadPreviousAudio,
             onPlaybackStatusUpdate: this.onPlaybackStatusUpdate,
