@@ -133,16 +133,7 @@ export default function UnderSearch() {
 
     useEffect(async () => {
         let themed = await AsyncStorage.getItem('theme');
-        if(themed === "light") {
-            setBackgroundColor(color.APP_BG)
-            setFont(color.FONT)
-            setSearch(color.SEARCH)
-            setActiveFont(color.ACTIVE_FONT)
-            setFontMedium(color.FONT_MEDIUM)
-            setFontLight(color.FONT_LIGHT)
-            setThemeBack("rgba(121, 160, 90, 0.2)")
-            setThemeColor("#000")
-        } else {
+        if(themed === "dark") {
             setBackgroundColor(color.DARK_APP_BG)
             setFont(color.DARK_FONT)
             setSearch(color.DARK_SEARCH)
@@ -151,6 +142,15 @@ export default function UnderSearch() {
             setFontLight(color.DARK_FONT_LIGHT)
             setThemeBack("rgba(0,0,0, 1)")
             setThemeColor("#fff")
+        } else {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearch(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
+            setThemeBack("rgba(121, 160, 90, 0.2)")
+            setThemeColor("#000")
         }
     }, [])
 

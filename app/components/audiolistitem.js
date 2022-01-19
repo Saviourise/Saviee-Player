@@ -56,22 +56,22 @@ const AudioListItem = ({title, duration, onOptionPress, onAudioPress, isPlaying,
 
     useEffect(async () => {
         let themed = await AsyncStorage.getItem('theme');
-        if(themed === "light") {
-            setBackgroundColor(color.APP_BG)
-            setFont(color.FONT)
-            setSearch(color.SEARCH)
-            setActiveFont(color.ACTIVE_FONT)
-            setFontMedium(color.FONT_MEDIUM)
-            setFontLight(color.FONT_LIGHT)
-        } else {
+        if(themed === "dark") {
             setBackgroundColor(color.DARK_APP_BG)
             setFont(color.DARK_FONT)
             setSearch(color.DARK_SEARCH)
             setActiveFont(color.DARK_ACTIVE_FONT)
             setFontMedium(color.DARK_FONT_MEDIUM)
             setFontLight(color.DARK_FONT_LIGHT)
+        } else {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearch(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
         }
-    })
+    }, [])
     
     return (
     <>
@@ -109,6 +109,8 @@ const AudioListItem = ({title, duration, onOptionPress, onAudioPress, isPlaying,
             size={20}
             color={color.FONT_MEDIUM}
             onPress={onOptionPress}
+            animated={true}
+            style={{padding: 10,}}
             />
             </TouchableOpacity>
         </View>
@@ -138,7 +140,6 @@ const styles = StyleSheet.create({
     },
     rightContainer: {
         flex: 1,
-        flexBasis: 50,
         height: 50,
         alignItems: 'center',
         justifyContent: 'center',

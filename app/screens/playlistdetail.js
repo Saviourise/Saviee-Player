@@ -19,7 +19,14 @@ const PlayListDetail = (props) => {
 
     const [visible, setVisible] = useState(false);
 
-    const openMenu = () => setVisible(true);
+    const openMenu = () => {
+        setVisible(true)
+        if(playList.title === "Favourites") {
+            setDeleteText("")
+        } else {
+            setDeleteText("Delete Playlist")
+        }
+    };
 
     const closeMenu = () => setVisible(false);
 
@@ -90,43 +97,50 @@ const PlayListDetail = (props) => {
 
 
     const removePlaylist = async () => {
-        let isPlaying = context.isPlaying;
-        let isPlayListRunning = context.isPlayListRunning;
-        let soundObj = context.soundObj;
-        let playbackPosition = context.playbackPosition;
-        let activePlayList = context.activePlayList;
+        if (playList.title !== "Favourites") {
+            let isPlaying = context.isPlaying;
+            let isPlayListRunning = context.isPlayListRunning;
+            let soundObj = context.soundObj;
+            let playbackPosition = context.playbackPosition;
+            let activePlayList = context.activePlayList;
 
-        if(context.isPlayListRunning && activePlayList.id === playList.id) {
-            //stop this audio
-            await context.playbackObj.stopAsync();
-            await context.playbackObj.unloadAsync();
+            if(context.isPlayListRunning && activePlayList.id === playList.id) {
+                //stop this audio
+                await context.playbackObj.stopAsync();
+                await context.playbackObj.unloadAsync();
 
-            isPlaying = false;
-            isPlayListRunning = false;
-            soundObj = null;
-            playbackPosition = 0;
-            activePlayList = [];
+                isPlaying = false;
+                isPlayListRunning = false;
+                soundObj = null;
+                playbackPosition = 0;
+                activePlayList = [];
+            }
+
+            const result = await AsyncStorage.getItem('playlist')
+
+            if(result != null) {
+                const oldPlayLists = JSON.parse(result)
+                const updatedPlayLists = oldPlayLists.filter((item) => item.id !== playList.id)
+
+                AsyncStorage.setItem('playlist', JSON.stringify(updatedPlayLists))
+                context.updateState(context, {
+                    playList: updatedPlayLists,
+                    isPlayListRunning,
+                    activePlayList,
+                    playbackPosition,
+                    isPlaying,
+                    soundObj,
+                })
+            }
+
+            props.navigation.goBack()
+        } else {
+            return;
         }
-
-        const result = await AsyncStorage.getItem('playlist')
-
-        if(result != null) {
-            const oldPlayLists = JSON.parse(result)
-            const updatedPlayLists = oldPlayLists.filter((item) => item.id !== playList.id)
-
-            AsyncStorage.setItem('playlist', JSON.stringify(updatedPlayLists))
-            context.updateState(context, {
-                playList: updatedPlayLists,
-                isPlayListRunning,
-                activePlayList,
-                playbackPosition,
-                isPlaying,
-                soundObj,
-            })
-        }
-
-        props.navigation.goBack()
+        
     }
+
+    const [deleteText, setDeleteText] = useState("Delete Playlist")
 
     const [backgroundColor, setBackgroundColor] = useState(color.APP_BG);
     const [font, setFont] = useState(color.FONT);
@@ -140,15 +154,7 @@ const PlayListDetail = (props) => {
 
     useEffect(async () => {
         let themed = await AsyncStorage.getItem('theme');
-        if(themed === "light") {
-            setBackgroundColor(color.APP_BG)
-            setFont(color.FONT)
-            setSearch(color.SEARCH)
-            setActiveFont(color.ACTIVE_FONT)
-            setFontMedium(color.FONT_MEDIUM)
-            setFontLight(color.FONT_LIGHT)
-            setBarColor("dark-content")
-        } else {
+        if(themed === "dark") {
             setBackgroundColor(color.DARK_APP_BG)
             setFont(color.DARK_FONT)
             setSearch(color.DARK_SEARCH)
@@ -156,6 +162,14 @@ const PlayListDetail = (props) => {
             setFontMedium(color.DARK_FONT_MEDIUM)
             setFontLight(color.DARK_FONT_LIGHT)
             setBarColor("light-content")
+        } else {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearch(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
+            setBarColor("dark-content")
         }
     }, [])
 
@@ -197,7 +211,7 @@ const PlayListDetail = (props) => {
                                         style={styles.listIcon}
                                         onPress={openMenu}
                                     />}>
-                            <Menu.Item onPress={removePlaylist} titleStyle={{color: font}} title="Delete Playlist" />
+                            <Menu.Item onPress={removePlaylist} titleStyle={{color: font}} title={deleteText} />
                         </Menu>
                     </View>
                 </View>

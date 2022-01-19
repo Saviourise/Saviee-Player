@@ -220,6 +220,9 @@ export default class Audioget extends Component {
 
     componentDidMount(){
         this.getPermission()
+        Audio.setAudioModeAsync({
+            staysActiveInBackground: true,
+        });
         if(this.state.playbackObj === null) {
             this.setState({...this.state, playbackObj: new Audio.Sound()});
         }

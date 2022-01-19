@@ -3,7 +3,13 @@ import { storeAudioForNextOpening } from './helper';
 //Play Audio
 export const play = async (playbackObj, uri, lastPosition) => {
     try {
+        //let uri;
+        //console.log(uri)
+        if (uri.includes('%20')) {
+            uri = encodeURI(uri)
+        }
         if(!lastPosition) {
+            
             return await playbackObj.loadAsync(
                 { uri },
                 { shouldPlay: true, progressUpdateIntervalMillis: 1000 }
@@ -62,6 +68,9 @@ export const resume = async (playbackObj) => {
 //Select Another Audio
 export const playNext = async ( playbackObj, uri) => {
     try {
+        if (uri.includes('%20')) {
+            uri = encodeURI(uri)
+        }
         await playbackObj.stopAsync();
         await playbackObj.unloadAsync();
         return await play(playbackObj, uri)
@@ -84,6 +93,8 @@ export const selectAudio = async (audio, context, playListInfo = {}) => {
     } = context;
     try {
         //Play Audio
+        // console.log(audio.uri)
+        // console.log(encodeURI(audio.uri))
         if(soundObj === null) {
             const status = await play(playbackObj, audio.uri, audio.lastPosition);
             const index = audioFiles.findIndex(({id}) => id === audio.id)

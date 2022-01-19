@@ -412,15 +412,7 @@ const PlayerModal = (props) => {
             }
         }
         let themed = await AsyncStorage.getItem('theme');
-        if(themed === "light") {
-            setBackgroundColor(color.APP_BG)
-            setFont(color.FONT)
-            setSearch(color.SEARCH)
-            setActiveFont(color.ACTIVE_FONT)
-            setFontMedium(color.FONT_MEDIUM)
-            setFontLight(color.FONT_LIGHT)
-            setBarColor("dark-content")
-        } else {
+        if(themed === "dark") {
             setBackgroundColor(color.DARK_APP_BG)
             setFont(color.DARK_FONT)
             setSearch(color.DARK_SEARCH)
@@ -428,6 +420,14 @@ const PlayerModal = (props) => {
             setFontMedium(color.DARK_FONT_MEDIUM)
             setFontLight(color.DARK_FONT_LIGHT)
             setBarColor("light-content")
+        } else {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearch(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
+            setBarColor("dark-content")
         }
     }, [])
 
@@ -448,7 +448,7 @@ const PlayerModal = (props) => {
 
             <Surface style={styles.surface}>
                 <Image 
-                   source={require('C:/Users/me/Documents/MusicAppProject/assets/dance.gif')}
+                   source={require('C:/Users/me/Documents/Saviee Player/assets/dance.gif')}
                     style={{width: '100%', height:'100%' }} 
                 />
             </Surface>
@@ -462,7 +462,7 @@ const PlayerModal = (props) => {
                   step={0.001}
                   value={calculateSeekBar()}
                   minimumTrackTintColor={color.ACTIVE_BG}
-                  maximumTrackTintColor={color.FONT}
+                  maximumTrackTintColor={search}
                   thumbTintColor={color.ACTIVE_BG}
                   onValueChange={(value) => {
                     setCurrentPosition(

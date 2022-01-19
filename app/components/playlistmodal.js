@@ -1,13 +1,43 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { View,
 Text, Modal, StatusBar, StyleSheet, TouchableWithoutFeedback, Dimensions, TouchableOpacity } from 'react-native'
 import color from '../misc/color';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PlaylistInputModal from "../components/playlistinputmodal";
+import {AudioContext} from '../context/audioget';
 
 const {width} = Dimensions.get('window')
 
 const PlaylistModal = ({visible, currentItem, onClose, onPlayPress, onPlaylistPress}) => {
 
     const {filename} = currentItem
+    const [modalVisible, setModalVisible] = useState(false);
+
+     const context = useContext(AudioContext)
+
+    const {playList, addToPlaylist, updateState} = context 
+
+    const createPlaylist = async (playlistName) => {
+        const result = await AsyncStorage.getItem('playlist');
+        if(result !== null) {
+            const audios = [];
+            if(addToPlaylist) {
+                audios.push(addToPlaylist)
+            }
+            const newList = {
+                id: Date.now(),
+                title: playlistName,
+                audios: audios,
+            }
+
+            const updatedList = [...playList, newList];
+            updateState(context, {addToPlaylist: null, playList: updatedList})
+            await AsyncStorage.setItem('playlist', JSON.stringify(updatedList))
+        }
+        setModalVisible(false)
+    }
+
+
     return (
         <>
             
@@ -25,7 +55,10 @@ const PlaylistModal = ({visible, currentItem, onClose, onPlayPress, onPlaylistPr
                         <TouchableWithoutFeedback onPress={onPlaylistPress}>
                             <Text style={styles.option}>See All Playlists</Text>
                         </TouchableWithoutFeedback>
-                        <TouchableOpacity onPress={() => console.log("Add New Playlist")} style={{ marginTop: 10, textAlign:'right',}}>
+                        <TouchableOpacity onPress={() => {
+                            setModalVisible(true)
+                            onClose
+                        }} style={{ marginTop: 10, textAlign:'right',}}>
                             <Text style={styles.playlistButton}>+ Create New Playlist</Text>
                         </TouchableOpacity>
                     </View>
@@ -37,6 +70,11 @@ const PlaylistModal = ({visible, currentItem, onClose, onPlayPress, onPlaylistPr
                     <View style={styles.modalBg}></View>
                 </TouchableWithoutFeedback>
             </Modal>
+            <PlaylistInputModal
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onSubmit={createPlaylist}
+            />
         </>
     );
 };

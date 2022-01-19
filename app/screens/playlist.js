@@ -4,7 +4,6 @@ import PlaylistInputModal from "../components/playlistinputmodal";
 import OpenPlayerModal from '../components/openplayermodal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AudioContext} from '../context/audioget';
-import PlayListDetail from '../components/playlistdetail'
 import { LinearGradient } from 'expo-linear-gradient';
 import color from '../misc/color';
 import { Entypo, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -144,20 +143,20 @@ const Playlist = ({navigation}) => {
         }
 
         let themed = await AsyncStorage.getItem('theme');
-        if(themed === "light") {
-            setBackgroundColor(color.APP_BG)
-            setFont(color.FONT)
-            setSearch(color.SEARCH)
-            setActiveFont(color.ACTIVE_FONT)
-            setFontMedium(color.FONT_MEDIUM)
-            setFontLight(color.FONT_LIGHT)
-        } else {
+        if(themed === "dark") {
             setBackgroundColor(color.DARK_APP_BG)
             setFont(color.DARK_FONT)
             setSearch(color.DARK_SEARCH)
             setActiveFont(color.DARK_ACTIVE_FONT)
             setFontMedium(color.DARK_FONT_MEDIUM)
             setFontLight(color.DARK_FONT_LIGHT)
+        } else {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearch(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
         }
     }, [])
  

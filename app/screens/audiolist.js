@@ -68,26 +68,29 @@ class Audiolist extends Component {
 
         await selectAudio(audio, this.context)
 
+        // console.log(audio.filename)
+        // console.log(audio.uri)
+
         
     }
 
     componentDidMount = async () => {
         this.context.loadPreviousAudio();
         let themed = await AsyncStorage.getItem('theme');
-        if(themed === "light") {
-            this.setState({...this.state, backgroundColor: color.APP_BG,})
-            this.setState({...this.state, font: color.FONT,})
-            this.setState({...this.state, search: color.SEARCH,})
-            this.setState({...this.state, activeFont: color.ACTIVE_FONT,})
-            this.setState({...this.state, fontMedium: color.FONT_MEDIUM,})
-            this.setState({...this.state, fontLight: color.FONT_LIGHT,})
-        } else {
+        if(themed === "dark") {
             this.setState({...this.state, backgroundColor: color.DARK_APP_BG,})
             this.setState({...this.state, font: color.DARK_FONT,})
             this.setState({...this.state, search: color.DARK_SEARCH,})
             this.setState({...this.state, activeFont: color.DARK_ACTIVE_FONT,})
             this.setState({...this.state, fontMedium: color.DARK_FONT_MEDIUM,})
             this.setState({...this.state, fontLight: color.DARK_FONT_LIGHT,})
+        } else {
+            this.setState({...this.state, backgroundColor: color.APP_BG,})
+            this.setState({...this.state, font: color.FONT,})
+            this.setState({...this.state, search: color.SEARCH,})
+            this.setState({...this.state, activeFont: color.ACTIVE_FONT,})
+            this.setState({...this.state, fontMedium: color.FONT_MEDIUM,})
+            this.setState({...this.state, fontLight: color.FONT_LIGHT,})
         }
     }
 

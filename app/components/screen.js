@@ -10,10 +10,10 @@ const Screen = ({children}) => {
 
     useEffect(async () => {
         let themed = await AsyncStorage.getItem('theme');
-        if(themed === "light") {
-            setBackgroundColor(color.APP_BG)
-        } else {
+        if(themed === "dark") {
             setBackgroundColor(color.DARK_APP_BG)
+        } else {
+            setBackgroundColor(color.APP_BG)
         }
     }, [])
     return ( <>

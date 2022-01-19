@@ -275,23 +275,23 @@ const OptionModal = ({
         }
 
         let themed = await AsyncStorage.getItem('theme');
-        if(themed === "light") {
-            setBackgroundColor(color.APP_BG)
-            setFont(color.FONT)
-            setSearch(color.SEARCH)
-            setActiveFont(color.ACTIVE_FONT)
-            setFontMedium(color.FONT_MEDIUM)
-            setFontLight(color.FONT_LIGHT)
-        } else {
+        if(themed === "dark") {
             setBackgroundColor(color.DARK_APP_BG)
             setFont(color.DARK_FONT)
             setSearch(color.DARK_SEARCH)
             setActiveFont(color.DARK_ACTIVE_FONT)
             setFontMedium(color.DARK_FONT_MEDIUM)
             setFontLight(color.DARK_FONT_LIGHT)
+        } else {
+            setBackgroundColor(color.APP_BG)
+            setFont(color.FONT)
+            setSearch(color.SEARCH)
+            setActiveFont(color.ACTIVE_FONT)
+            setFontMedium(color.FONT_MEDIUM)
+            setFontLight(color.FONT_LIGHT)
         }
         
-    })
+    }, [])
 
     return (
         <>
@@ -384,7 +384,7 @@ const OptionModal = ({
                         </TouchableWithoutFeedback>
 
                         <TouchableWithoutFeedback onPress={deleteSong}>
-                            <View style={{flexDirection: 'row', paddingVertical: 10,}}>
+                            <View style={{flexDirection: 'row', paddingVertical: 10, marginBottom: 20,}}>
                                 <MaterialCommunityIcons 
                                     name="delete"
                                     size={20}
@@ -403,12 +403,9 @@ const OptionModal = ({
                 <Snackbar
                 visible={visibleSnack}
                 onDismiss={onDismissSnackBar}
-                duration={2000}
+                duration={1000}
                 action={{
                 label: 'Close',
-                onPress: () => {
-                    // Do something
-                },
                 }}>
                 {snackbartext}
             </Snackbar>
