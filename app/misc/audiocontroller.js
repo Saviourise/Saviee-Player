@@ -1,10 +1,15 @@
 import { storeAudioForNextOpening } from './helper';
+import Constants from 'expo-constants';
 
 //Play Audio
-export const play = async (playbackObj, uri, lastPosition) => {
+export const play = async (playbackObj, uri, lastPosition, filename) => {
+
+    const sendNotification = async () => {
+        
+    }
+
     try {
-        //let uri;
-        //console.log(uri)
+        
         if (uri.includes('%20')) {
             uri = encodeURI(uri)
         }
@@ -21,7 +26,7 @@ export const play = async (playbackObj, uri, lastPosition) => {
             { uri },
             { shouldPlay: true, progressUpdateIntervalMillis: 1000 }
         );
-
+        sendNotification()
         return await playbackObj.playFromPositionAsync(lastPosition)
 
         //return status;
@@ -66,14 +71,14 @@ export const resume = async (playbackObj) => {
 
 
 //Select Another Audio
-export const playNext = async ( playbackObj, uri) => {
+export const playNext = async ( playbackObj, uri, filename) => {
     try {
         if (uri.includes('%20')) {
             uri = encodeURI(uri)
         }
         await playbackObj.stopAsync();
         await playbackObj.unloadAsync();
-        return await play(playbackObj, uri)
+        return await play(playbackObj, uri, filename)
     } catch (error) {
         console.log(error.message)
     }
@@ -96,7 +101,7 @@ export const selectAudio = async (audio, context, playListInfo = {}) => {
         // console.log(audio.uri)
         // console.log(encodeURI(audio.uri))
         if(soundObj === null) {
-            const status = await play(playbackObj, audio.uri, audio.lastPosition);
+            const status = await play(playbackObj, audio.uri, audio.lastPosition, audio.filename);
             const index = audioFiles.findIndex(({id}) => id === audio.id)
             updateState(
                 context, {
@@ -136,7 +141,7 @@ export const selectAudio = async (audio, context, playListInfo = {}) => {
 
         //Select Another Audio
         if (soundObj.isLoaded && currentAudio.id !== audio.id) {
-            const status = await playNext(playbackObj, audio.uri)
+            const status = await playNext(playbackObj, audio.uri, audio.filename)
             const index = audioFiles.findIndex(({id}) => id === audio.id)
             updateState(
                 context, {

@@ -5,6 +5,14 @@ import color from '../misc/color';
 import {AudioContext} from '../context/audioget';
 import { play, pause, resume, playNext, selectAudio, changeAudio, moveAudio } from '../misc/audiocontroller';
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldShowAlert: true
+    }
+  }
+})
+
 const Fab = () => {
 
     const context = useContext(AudioContext);

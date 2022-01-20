@@ -151,7 +151,7 @@ export default class Audioget extends Component {
 
                 let indexOnAllList = this.state.audioFiles.findIndex(({id}) => id === audio.id)
 
-                const status = await playNext(this.state.playbackObj, audio.uri)
+                const status = await playNext(this.state.playbackObj, audio.uri, audio.filename)
                 return this.updateState(this, {
                     soundObj: status,
                     isPlaying: true,
@@ -178,7 +178,7 @@ export default class Audioget extends Component {
                 const filteredItems = this.state.addedToQueue.filter(item => item !== this.state.addedToQueue[0])
                 //console.log(filteredItems)
                 indexOnAllList = this.state.audioFiles.findIndex(({id}) => id === audio.id)
-                const status = await playNext(this.state.playbackObj, audio.uri)
+                const status = await playNext(this.state.playbackObj, audio.uri, audio.filename)
                 this.updateState(this, {
                     soundObj: status,
                     currentAudio: audio,
@@ -192,7 +192,7 @@ export default class Audioget extends Component {
                     const randomIndex = Math.floor(Math.random() * this.state.audioFiles.length) + 1 ;
                     const audio = this.state.audioFiles[randomIndex];
                     indexOnAllList = this.state.audioFiles.findIndex(({id}) => id === audio.id)
-                    const status = await playNext(this.state.playbackObj, audio.uri)
+                    const status = await playNext(this.state.playbackObj, audio.uri, audio.filename)
                     this.updateState(this, {
                         soundObj: status,
                         currentAudio: audio,
@@ -203,7 +203,7 @@ export default class Audioget extends Component {
                     await storeAudioForNextOpening(audio, nextAudioIndex);
                 } else {
                     const audio = this.state.audioFiles[nextAudioIndex];
-                    const status = await playNext(this.state.playbackObj, audio.uri)
+                    const status = await playNext(this.state.playbackObj, audio.uri, audio.filename)
                     this.updateState(this, {
                         soundObj: status,
                         currentAudio: audio,

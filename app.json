@@ -52,7 +52,6 @@
         }
       ]
     },
-    "plugins": ["sentry-expo"]
   },
   "android": {
     "adaptiveIcon": {

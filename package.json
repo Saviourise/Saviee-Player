@@ -34,6 +34,7 @@
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "~2.1.0",
     "react-native-grid-component": "^2.0.1",
+    "react-native-music-control": "^1.4.0",
     "react-native-paper": "^4.11.1",
     "react-native-permissions": "^3.2.0",
     "react-native-reanimated": "^2.3.0-beta.4",
